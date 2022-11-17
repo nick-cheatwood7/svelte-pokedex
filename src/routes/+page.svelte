@@ -1,8 +1,19 @@
 <script lang="ts">
 	import Title from '$lib/components/page-title.svelte';
+	import PokemonCard from '$lib/components/pokemon-card.svelte';
 	import { pokemon } from '$lib/stores/pokeStore';
+	import type { Pokemon } from '../lib/@types/Pokemon';
+	let searchTerm = '';
+	let filteredPokemon: Pokemon[] = [];
+
 	$: {
-		console.log($pokemon);
+		if (searchTerm) {
+			filteredPokemon = $pokemon.filter((pokemon) => {
+				return pokemon.name.toLowerCase().includes(searchTerm.toLowerCase());
+			});
+		} else {
+			filteredPokemon = [...$pokemon];
+		}
 	}
 </script>
 
@@ -12,6 +23,15 @@
 
 <Title>Svelte Kit Pokedex</Title>
 
-{#each $pokemon as poke}
-	<p>{poke.name}</p>
-{/each}
+<input
+	class="w-full rounded-md text-md p-4 border-2 border-gray-200"
+	type="text"
+	placeholder="Search..."
+	bind:value={searchTerm}
+/>
+
+<div class="py-4 grid gap-4 md:grid-cols-2 grid-cols-1">
+	{#each filteredPokemon as poke}
+		<PokemonCard pokemon={poke} />
+	{/each}
+</div>
