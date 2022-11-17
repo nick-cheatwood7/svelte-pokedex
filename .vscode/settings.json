@@ -8,5 +8,8 @@
 	},
 	// ESLint Settings
 	"eslint.packageManager": "pnpm",
-	"eslint.workingDirectories": ["./"]
+	"eslint.workingDirectories": ["./"],
+	"[svelte]": {
+		"editor.defaultFormatter": "svelte.svelte-vscode"
+	}
 }
