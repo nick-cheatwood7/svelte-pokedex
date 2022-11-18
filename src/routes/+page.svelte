@@ -6,6 +6,8 @@
 	let searchTerm = '';
 	let filteredPokemon: Pokemon[] = [];
 
+	let page = 1;
+
 	$: {
 		if (searchTerm) {
 			filteredPokemon = $pokemon.filter((pokemon) => {
@@ -14,6 +16,17 @@
 		} else {
 			filteredPokemon = [...$pokemon];
 		}
+	}
+
+	async function getNextPage() {
+		const res = await fetch(`/api/pokemon?limit=150&offset=${page * 150}`);
+		const data = await res.json();
+		page++;
+		pokemon.update((p) => [...p, ...data]);
+	}
+
+	function clear() {
+		searchTerm = '';
 	}
 </script>
 
@@ -35,3 +48,14 @@
 		<PokemonCard pokemon={poke} />
 	{/each}
 </div>
+
+{#if searchTerm.length > 0}
+	<button class="w-full bg-gray-200 py-3 px-2 rounded-md shadow-sm hover:shadow-md" on:click={clear}
+		>Clear Search</button
+	>
+{:else}
+	<button
+		class="w-full bg-blue-400 text-white py-3 px-2 rounded-md shadow-sm hover:shadow-md"
+		on:click={getNextPage}>Load More Pokemon</button
+	>
+{/if}
